@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
 	"google.golang.org/genai"
 
 	"google.golang.org/adk/agent"
@@ -16,6 +17,9 @@ import (
 )
 
 func main() {
+	// Load .env file if present (silently ignored if missing)
+	_ = godotenv.Load()
+
 	cfg := ParseConfig()
 	ctx := context.Background()
 
