@@ -34,6 +34,9 @@ func main() {
 
 	modelName := cfg.Model
 	if modelName == "" {
+		modelName = os.Getenv("GEMINI_MODEL")
+	}
+	if modelName == "" {
 		modelName = "gemini-2.5-pro"
 	}
 
