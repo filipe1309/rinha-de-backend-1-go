@@ -250,7 +250,11 @@ Multi-agent AI system built with Google ADK that autonomously optimizes backend 
 ### Usage
 
 ```bash
-# Set your API key
+# Option 1: Use .env file (recommended)
+cp .env.example .env
+# Edit .env with your real API key
+
+# Option 2: Export directly
 export GOOGLE_API_KEY=your-key-here
 
 # Run with defaults (target: >44936 people, <17418ms p99)
