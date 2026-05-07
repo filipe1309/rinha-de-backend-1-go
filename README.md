@@ -224,10 +224,15 @@ After the test, compare your **contagem-pessoas** (person count) and **p99 laten
 1. **Async writes** — POST returns 201 immediately; DB insert happens in background batch
 2. **COPY protocol** — batch inserts via `pgx.CopyFrom` (10-50x faster than individual INSERTs)
 3. **In-memory nickname set** — duplicate check without DB query
-4. **Connection pooling** — pgxpool with 30 max / 10 min connections per instance
-5. **PostgreSQL tuning** — `synchronous_commit=off`, large `shared_buffers`, high `work_mem`
-6. **Stripped binary** — compiled with `-ldflags "-s -w"` for smaller image
-7. **GIN trigram index** — substring search without sequential scan
+4. **Search results cache** — 15s TTL in-memory cache eliminates ~80% of DB search queries
+5. **Statement caching** — pgx prepared statement cache reduces parse overhead
+6. **Connection pooling** — pgxpool with 10 max / 5 min connections (tuned to avoid contention on 1 CPU)
+7. **PostgreSQL tuning** — `fsync=off`, `synchronous_commit=off`, 768MB `shared_buffers`, `commit_delay=100`
+8. **Nginx keepalive** — persistent upstream connections, epoll, access logs disabled
+9. **Large batches** — 1000-item batches with 10ms flush interval for fewer COPY operations
+10. **HTTP server timeouts** — read/write/idle limits prevent request pile-up under load
+11. **Stripped binary** — compiled with `-ldflags "-s -w"` for smaller image
+12. **GIN trigram index** — substring search without sequential scan
 
 ## License
 
