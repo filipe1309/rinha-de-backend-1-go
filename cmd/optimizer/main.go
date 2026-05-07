@@ -33,9 +33,9 @@ func main() {
 	if modelName == "" {
 		switch provider {
 		case "gemini":
-			modelName = "gemini-2.5-flash"
+			modelName = "gemini-2.5-pro"
 		case "openai", "github":
-			modelName = "gpt-4o"
+			modelName = "gpt-4.1"
 		}
 	}
 
