@@ -1,4 +1,4 @@
-# Rinha de Backend 2023 Q3 — Go
+# Rinha de Backend 1 (2023) — Go
 
 [![Go](https://img.shields.io/badge/Go-1.25-00ADD8?logo=go&logoColor=white)](https://go.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
