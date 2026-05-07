@@ -12,6 +12,7 @@ type Config struct {
 	MaxIterations int
 	Model         string
 	ProjectDir    string
+	Auto          bool
 }
 
 func ParseConfig() *Config {
@@ -20,6 +21,7 @@ func ParseConfig() *Config {
 	flag.IntVar(&cfg.TargetP99, "target-p99", 17418, "Target p99 latency in ms to beat")
 	flag.IntVar(&cfg.MaxIterations, "max-iterations", 5, "Maximum optimization iterations")
 	flag.StringVar(&cfg.Model, "model", "", "Gemini model name (default: gemini-2.5-pro)")
+	flag.BoolVar(&cfg.Auto, "auto", true, "Run autonomously without interactive prompt")
 	flag.Parse()
 
 	cwd, err := os.Getwd()
