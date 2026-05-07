@@ -54,40 +54,6 @@ func TestParseConfig_OverridesFromFlags(t *testing.T) {
 	}
 }
 
-func TestDetectModelProvider_PriorityOrder(t *testing.T) {
-	t.Setenv("GOOGLE_API_KEY", "google-key")
-	t.Setenv("OPENAI_API_KEY", "openai-key")
-	t.Setenv("GH_TOKEN", "github-key")
-
-	provider, key := DetectModelProvider()
-	if provider != "gemini" || key != "google-key" {
-		t.Fatalf("expected gemini/google-key, got %q/%q", provider, key)
-	}
-
-	t.Setenv("GOOGLE_API_KEY", "")
-	provider, key = DetectModelProvider()
-	if provider != "openai" || key != "openai-key" {
-		t.Fatalf("expected openai/openai-key, got %q/%q", provider, key)
-	}
-
-	t.Setenv("OPENAI_API_KEY", "")
-	provider, key = DetectModelProvider()
-	if provider != "github" || key != "github-key" {
-		t.Fatalf("expected github/github-key, got %q/%q", provider, key)
-	}
-}
-
-func TestDetectModelProvider_NoConfiguredProvider(t *testing.T) {
-	t.Setenv("GOOGLE_API_KEY", "")
-	t.Setenv("OPENAI_API_KEY", "")
-	t.Setenv("GH_TOKEN", "")
-
-	provider, key := DetectModelProvider()
-	if provider != "" || key != "" {
-		t.Fatalf("expected empty provider and key, got %q/%q", provider, key)
-	}
-}
-
 func runParseConfig(t *testing.T, args ...string) *Config {
 	t.Helper()
 

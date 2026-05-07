@@ -266,11 +266,10 @@ go run ./cmd/optimizer/ --target-count 45000 --target-p99 15000 --max-iterations
 
 ### Supported Models
 
-- **Gemini** (default via `GOOGLE_API_KEY`)
-- **OpenAI** (via `OPENAI_API_KEY`)
-- **GitHub Models** (via `GH_TOKEN`)
+- **Gemini** (default: `gemini-2.5-pro`) — requires `GOOGLE_API_KEY`
+- Override with `--model gemini-2.5-flash` for faster/cheaper runs
 
-> Note: the current optimizer scaffold auto-detects these providers, but the runtime is presently wired to Gemini-backed ADK models.
+> The Go ADK currently only supports Gemini models natively. See [adk.dev/agents/models](https://adk.dev/agents/models/) for updates.
 
 ### Safety
 

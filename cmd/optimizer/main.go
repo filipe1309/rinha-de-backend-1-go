@@ -8,12 +8,12 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"google.golang.org/genai"
 
 	"google.golang.org/adk/agent"
 	"google.golang.org/adk/cmd/launcher"
 	"google.golang.org/adk/cmd/launcher/full"
 	"google.golang.org/adk/model/gemini"
+	"google.golang.org/genai"
 )
 
 func main() {
@@ -23,30 +23,20 @@ func main() {
 	cfg := ParseConfig()
 	ctx := context.Background()
 
-	provider, key := DetectModelProvider()
-	if cfg.Model == "" && provider == "" {
-		fmt.Fprintln(os.Stderr, "No model API key found. Set GOOGLE_API_KEY, OPENAI_API_KEY, or GH_TOKEN.")
+	apiKey := os.Getenv("GOOGLE_API_KEY")
+	if apiKey == "" {
+		fmt.Fprintln(os.Stderr, "GOOGLE_API_KEY is required. The Go ADK only supports Gemini models.")
+		fmt.Fprintln(os.Stderr, "Get a key at: https://aistudio.google.com/apikey")
 		os.Exit(1)
 	}
 
 	modelName := cfg.Model
 	if modelName == "" {
-		switch provider {
-		case "gemini":
-			modelName = "gemini-2.5-pro"
-		case "openai", "github":
-			modelName = "gpt-4.1"
-		}
+		modelName = "gemini-2.5-pro"
 	}
-
-	if provider != "" && provider != "gemini" && key != "" {
-		log.Fatalf("detected %s credentials, but the current optimizer scaffold only supports Gemini-backed ADK models", provider)
-	}
-
-	_ = key
 
 	model, err := gemini.NewModel(ctx, modelName, &genai.ClientConfig{
-		APIKey: os.Getenv("GOOGLE_API_KEY"),
+		APIKey: apiKey,
 	})
 	if err != nil {
 		log.Fatalf("Failed to create model: %v", err)
