@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -34,7 +35,7 @@ func (r *PgRepository) GetByID(ctx context.Context, id uuid.UUID) (*Person, erro
 		"SELECT id, apelido, nome, nascimento, stack FROM pessoas WHERE id = $1", id)
 
 	var p Person
-	var nascimento string
+	var nascimento time.Time
 	var stack *string
 	err := row.Scan(&p.ID, &p.Apelido, &p.Nome, &nascimento, &stack)
 	if err != nil {
@@ -43,7 +44,7 @@ func (r *PgRepository) GetByID(ctx context.Context, id uuid.UUID) (*Person, erro
 		}
 		return nil, fmt.Errorf("querying person by id: %w", err)
 	}
-	p.Nascimento = nascimento
+	p.Nascimento = nascimento.Format("2006-01-02")
 	p.Stack = StackFromText(stack)
 	return &p, nil
 }
@@ -61,12 +62,12 @@ func (r *PgRepository) Search(ctx context.Context, term string) ([]Person, error
 	var people []Person
 	for rows.Next() {
 		var p Person
-		var nascimento string
+		var nascimento time.Time
 		var stack *string
 		if err := rows.Scan(&p.ID, &p.Apelido, &p.Nome, &nascimento, &stack); err != nil {
 			return nil, fmt.Errorf("scanning person row: %w", err)
 		}
-		p.Nascimento = nascimento
+		p.Nascimento = nascimento.Format("2006-01-02")
 		p.Stack = StackFromText(stack)
 		people = append(people, p)
 	}
