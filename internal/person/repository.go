@@ -49,11 +49,11 @@ func (r *PgRepository) GetByID(ctx context.Context, id uuid.UUID) (*Person, erro
 	return &p, nil
 }
 
+const searchPeopleQuery = "SELECT id, apelido, nome, nascimento, stack FROM pessoas WHERE search_field ILIKE '%' || $1 || '%' LIMIT 50"
+
 // Search finds people whose search_field contains the given term (case-insensitive).
 func (r *PgRepository) Search(ctx context.Context, term string) ([]Person, error) {
-	rows, err := r.pool.Query(ctx,
-		"SELECT id, apelido, nome, nascimento, stack FROM pessoas WHERE search_field ILIKE '%' || $1 || '%' LIMIT 50",
-		strings.ToLower(term))
+	rows, err := r.pool.Query(ctx, searchPeopleQuery, strings.ToLower(term))
 	if err != nil {
 		return nil, fmt.Errorf("searching people: %w", err)
 	}

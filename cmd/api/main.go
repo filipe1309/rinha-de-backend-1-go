@@ -27,8 +27,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to parse database URL: %v", err)
 	}
-	poolConfig.MaxConns = 30
-	poolConfig.MinConns = 10
+	poolConfig.MaxConns = 10
+	poolConfig.MinConns = 5
+	poolConfig.MaxConnLifetime = 30 * time.Minute
+	poolConfig.MaxConnIdleTime = 5 * time.Minute
+	poolConfig.HealthCheckPeriod = 15 * time.Second
 
 	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {
@@ -50,7 +53,7 @@ func main() {
 
 	cache := person.NewCache()
 	repo := person.NewPgRepository(pool)
-	batcher := person.NewBatcher(repo, 5000, 500, 5*time.Millisecond)
+	batcher := person.NewBatcher(repo, 10000, 1000, 10*time.Millisecond)
 	handler := person.NewHandlerWithBatcher(cache, repo, batcher)
 
 	batchCtx, batchCancel := context.WithCancel(context.Background())

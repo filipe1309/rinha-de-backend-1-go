@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/filipe1309/rinha-de-backend-1-2023/internal/person"
 )
@@ -22,7 +23,10 @@ func NewServer(addr string, handler *person.Handler) *http.Server {
 	mux.HandleFunc("GET /contagem-pessoas", handler.Count)
 
 	return &http.Server{
-		Addr:    addr,
-		Handler: mux,
+		Addr:         addr,
+		Handler:      mux,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 }

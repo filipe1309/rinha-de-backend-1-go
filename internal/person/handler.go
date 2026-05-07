@@ -5,15 +5,24 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/google/uuid"
 )
 
+type searchCacheEntry struct {
+	results []PersonResponse
+	expiry  time.Time
+}
+
 // Handler holds dependencies for HTTP handlers.
 type Handler struct {
-	cache   *Cache
-	repo    Repository
-	batcher *Batcher
+	cache       *Cache
+	repo        Repository
+	batcher     *Batcher
+	searchCache sync.Map // map[string]*searchCacheEntry
 }
 
 // NewHandler creates a Handler for unit testing (no batcher).
@@ -99,6 +108,16 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cacheKey := strings.ToLower(term)
+	if cached, ok := h.searchCache.Load(cacheKey); ok {
+		entry := cached.(*searchCacheEntry)
+		if time.Now().Before(entry.expiry) {
+			writeJSON(w, http.StatusOK, entry.results)
+			return
+		}
+		h.searchCache.Delete(cacheKey)
+	}
+
 	people, err := h.repo.Search(r.Context(), term)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "internal error")
@@ -109,6 +128,12 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 	for i := range people {
 		responses = append(responses, people[i].ToResponse())
 	}
+
+	h.searchCache.Store(cacheKey, &searchCacheEntry{
+		results: responses,
+		expiry:  time.Now().Add(15 * time.Second),
+	})
+
 	writeJSON(w, http.StatusOK, responses)
 }
 
