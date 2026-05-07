@@ -98,3 +98,8 @@ smoke: ## Run smoke test against running stack
 	@echo "\n=== GET /contagem-pessoas ==="
 	@curl -sf $(BASE_URL)/contagem-pessoas
 	@echo "\n"
+
+.PHONY: stress
+stress: ## Run Gatling stress test (requires Java 11+ and running stack)
+	@chmod +x stress-test/run-test.sh
+	@stress-test/run-test.sh
