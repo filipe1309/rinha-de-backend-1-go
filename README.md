@@ -187,6 +187,7 @@ make down              Stop Docker stack
 make logs              Tail all container logs
 make smoke             Run smoke test against running stack
 make stress            Run Gatling stress test (official challenge simulation)
+make optimize          Run AI optimizer agent
 make clean             Remove artifacts and stop containers
 ```
 
@@ -233,6 +234,45 @@ After the test, compare your **contagem-pessoas** (person count) and **p99 laten
 10. **HTTP server timeouts** — read/write/idle limits prevent request pile-up under load
 11. **Stripped binary** — compiled with `-ldflags "-s -w"` for smaller image
 12. **GIN trigram index** — substring search without sequential scan
+
+## 🤖 AI Optimizer (Google ADK)
+
+Multi-agent AI system built with Google ADK that autonomously optimizes backend performance by running stress tests, analyzing results, and modifying code/config iteratively.
+
+### Architecture Overview
+
+**Root orchestrator** coordinates three specialist sub-agents:
+
+- **Executor** — runs stress tests and rebuilds the Docker stack
+- **Analyzer** — reads project files and parses Gatling reports
+- **Optimizer** — modifies code/config and validates builds before the next run
+
+### Usage
+
+```bash
+# Set your API key
+export GOOGLE_API_KEY=your-key-here
+
+# Run with defaults (target: >44936 people, <17418ms p99)
+make optimize
+
+# Custom targets
+go run ./cmd/optimizer/ --target-count 45000 --target-p99 15000 --max-iterations 3
+```
+
+### Supported Models
+
+- **Gemini** (default via `GOOGLE_API_KEY`)
+- **OpenAI** (via `OPENAI_API_KEY`)
+- **GitHub Models** (via `GH_TOKEN`)
+
+> Note: the current optimizer scaffold auto-detects these providers, but the runtime is presently wired to Gemini-backed ADK models.
+
+### Safety
+
+- File modification whitelist
+- Max iteration limit
+- Build validation before testing
 
 ## License
 

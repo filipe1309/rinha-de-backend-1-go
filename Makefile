@@ -103,3 +103,7 @@ smoke: ## Run smoke test against running stack
 stress: ## Run Gatling stress test (requires Java 11+ and running stack)
 	@chmod +x stress-test/run-test.sh
 	@stress-test/run-test.sh
+
+.PHONY: optimize
+optimize: ## Run AI optimizer agent
+	go run ./cmd/optimizer/
