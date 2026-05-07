@@ -167,7 +167,7 @@ run_test() {
 main() {
     echo ""
     echo "╔══════════════════════════════════════════╗"
-    echo "║   Rinha de Backend 1 - Stress Test   ║"
+    echo "║     Rinha de Backend 1 - Stress Test     ║"
     echo "╚══════════════════════════════════════════╝"
     echo ""
 
