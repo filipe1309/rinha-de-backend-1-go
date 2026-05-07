@@ -60,16 +60,16 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     command: >
       postgres
-        -c shared_buffers=768MB
-        -c work_mem=128MB
-        -c maintenance_work_mem=256MB
+        -c shared_buffers=256MB
+        -c work_mem=16MB
+        -c maintenance_work_mem=64MB
         -c max_connections=100
         -c synchronous_commit=off
         -c checkpoint_completion_target=0.9
         -c effective_cache_size=1.5GB
         -c random_page_cost=1.1
-        -c wal_buffers=64MB
-        -c max_wal_size=2GB
+        -c wal_buffers=16MB
+        -c max_wal_size=512MB
         -c commit_delay=100
         -c commit_siblings=5
         -c full_page_writes=off
