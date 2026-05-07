@@ -158,6 +158,9 @@ Total budget: **1.5 CPUs** / **3.0 GB RAM**
 │   │   └── handler.go       # HTTP handlers
 │   └── server/
 │       └── server.go        # Route registration
+├── stress-test/
+│   ├── run-test.sh          # Automated Gatling runner (downloads deps)
+│   └── user-files/          # Simulation + resources
 ├── db/init.sql              # Schema + pg_trgm index
 ├── tests/integration_test.go # testcontainers integration tests
 ├── Dockerfile               # Multi-stage build
@@ -183,8 +186,38 @@ make up                Start full Docker stack
 make down              Stop Docker stack
 make logs              Tail all container logs
 make smoke             Run smoke test against running stack
+make stress            Run Gatling stress test (official challenge simulation)
 make clean             Remove artifacts and stop containers
 ```
+
+## Stress Test
+
+Run the [official Gatling simulation](https://github.com/zanfranceschi/rinha-de-backend-2023-q3/tree/main/stress-test) to evaluate performance and compare against other participants.
+
+### Prerequisites
+
+- Java 11+ (`brew install openjdk@17`)
+
+### Run
+
+```bash
+# Start the stack, then run the stress test
+make up
+make stress
+```
+
+The script automatically downloads Gatling 3.9.5 and the official test payloads on first run. The simulation takes ~3 minutes and generates an HTML report with p50/p75/p95/p99 latencies.
+
+### Comparing Results
+
+After the test, compare your **contagem-pessoas** (person count) and **p99 latency** against the [official final results](https://github.com/zanfranceschi/rinha-de-backend-2023-q3#resultado-da-etapa-final):
+
+| Metric | Top Participants | Notes |
+|--------|-----------------|-------|
+| Person count | ~46k | Higher = better (max was 46,576) |
+| p99 latency | 100–300ms | Lower = better |
+
+> ⚠️ Official results ran on AWS EC2 (c5.2xlarge). Local results differ in absolute values but are useful for iterative tuning.
 
 ## Performance Optimizations
 
