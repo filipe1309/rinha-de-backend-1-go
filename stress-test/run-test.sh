@@ -124,16 +124,37 @@ run_test() {
     sleep 5
 
     echo ""
-    echo "============================================"
+    info "Waiting for async writes to flush..."
+    sleep 5
+
+    # Extract p99 from Gatling stats.json
+    LATEST_STATS=$(find "$RESULTS_DIR" -name "stats.json" -type f | sort | tail -1)
+    P99="N/A"
+    P95="N/A"
+    P50="N/A"
+    if [[ -n "$LATEST_STATS" ]]; then
+        P99=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles4']['total']['value'])" 2>/dev/null || echo "N/A")
+        P95=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles3']['total']['value'])" 2>/dev/null || echo "N/A")
+        P50=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles2']['total']['value'])" 2>/dev/null || echo "N/A")
+    fi
+
     PERSON_COUNT=$(curl -sf http://localhost:9999/contagem-pessoas)
-    echo -e "  ${GREEN}Contagem de Pessoas: ${PERSON_COUNT}${NC}"
-    echo "============================================"
+
+    echo ""
+    echo "╔══════════════════════════════════════════╗"
+    echo "║              RESULTS                     ║"
+    echo "╠══════════════════════════════════════════╣"
+    printf "║  %-40s ║\n" "Contagem de Pessoas: ${PERSON_COUNT}"
+    printf "║  %-40s ║\n" "p50 geral: ${P50} ms"
+    printf "║  %-40s ║\n" "p95 geral: ${P95} ms"
+    printf "║  %-40s ║\n" "p99 geral: ${P99} ms"
+    echo "╚══════════════════════════════════════════╝"
     echo ""
 
     # Find and display the latest report path
     LATEST_REPORT=$(find "$RESULTS_DIR" -name "index.html" -type f | sort | tail -1)
     if [[ -n "$LATEST_REPORT" ]]; then
-        ok "Report: $LATEST_REPORT"
+        ok "Full report: $LATEST_REPORT"
         echo ""
         echo "  Open with: open $LATEST_REPORT"
     fi
