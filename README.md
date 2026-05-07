@@ -1,10 +1,10 @@
-# Rinha de Backend 1 (2023) — Go
+# Rinha de Backend 1 — Go
 
 [![Go](https://img.shields.io/badge/Go-1.25-00ADD8?logo=go&logoColor=white)](https://go.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 
-My implementation of the [Rinha de Backend 2023 Q3](https://github.com/zanfranceschi/rinha-de-backend-2023-q3) challenge — a high-performance people API stress-tested with [Gatling](https://gatling.io/).
+My implementation of the [Rinha de Backend 1](https://github.com/zanfranceschi/rinha-de-backend-2023-q3) challenge — a high-performance people API stress-tested with [Gatling](https://gatling.io/).
 
 ## Architecture
 
