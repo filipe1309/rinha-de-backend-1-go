@@ -127,15 +127,15 @@ run_test() {
     info "Waiting for async writes to flush..."
     sleep 5
 
-    # Extract p99 from Gatling stats.json
+    # Extract p99 from Gatling stats.json (percentiles1=p50, percentiles2=p75, percentiles3=p95, percentiles4=p99)
     LATEST_STATS=$(find "$RESULTS_DIR" -name "stats.json" -type f | sort | tail -1)
     P99="N/A"
     P95="N/A"
     P50="N/A"
     if [[ -n "$LATEST_STATS" ]]; then
-        P99=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles4']['total']['value'])" 2>/dev/null || echo "N/A")
-        P95=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles3']['total']['value'])" 2>/dev/null || echo "N/A")
-        P50=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles2']['total']['value'])" 2>/dev/null || echo "N/A")
+        P99=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles4']['total'])" 2>/dev/null || echo "N/A")
+        P95=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles3']['total'])" 2>/dev/null || echo "N/A")
+        P50=$(python3 -c "import json,sys; d=json.load(open('$LATEST_STATS')); print(d['stats']['percentiles1']['total'])" 2>/dev/null || echo "N/A")
     fi
 
     PERSON_COUNT=$(curl -sf http://localhost:9999/contagem-pessoas)
